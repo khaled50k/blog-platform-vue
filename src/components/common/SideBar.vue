@@ -1,7 +1,7 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-    <div class=" w-full max-h-full m-w-auto flex-1 flex flex-col min-h-0 ">
-        <div class="flex-1 flex flex-col   overflow-y-auto gap-5  ">
+    <div class=" w-full max-h-full m-w-auto flex-1 flex flex-col min-h-0 fixed-sidebar ">
+        <div class="flex-1 flex flex-col   overflow-y-auto gap-5   ">
             <div class="flex gap-4 items-center flex-shrink-0 px-4 bg-white p-4 rounded-xl">
                 <img class="inline-block h-10 w-10 rounded-full"
                     src="../../assest/social logo.png"
@@ -118,5 +118,14 @@ export default {
     position: absolute;
     top: -0.2rem;
     right: -0.3rem;
+}
+
+.fixed-sidebar {
+    position: sticky;
+    top: 80px;
+   
+
+    width: 100%;
+
 }
 </style>
