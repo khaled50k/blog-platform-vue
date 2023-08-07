@@ -39,6 +39,7 @@ body {
   color: var(--color-dark);
   background-color: var(--color-ligth);
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* start container */
@@ -69,7 +70,7 @@ img {
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: all 300ms ease;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 }
 
 .btn:hover {

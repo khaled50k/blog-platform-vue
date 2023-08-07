@@ -1,4 +1,5 @@
 import Vuex from "vuex";
+import axios from "axios";
 const API_BASE_URL = "http://localhost:5000/api"; // Adjust this to match your API base URL
 
 export const store = new Vuex.Store({
@@ -6,9 +7,12 @@ export const store = new Vuex.Store({
     user: {},
     posts: [],
   },
+  getters:{
+    getPosts:(state)=> state.posts
+  },
   mutations: {
-    SET_POSTS(state, posts) {
-      state.posts = posts;
+   async SET_POSTS(state, posts) {
+      state.posts = await posts;
     },
     ADD_POST(state, post) {
       state.posts.unshift(post);
@@ -22,7 +26,7 @@ export const store = new Vuex.Store({
       try {
         const response = await axios.get(`${API_BASE_URL}/post`);
         const posts = response.data;
-        commit("SET_POSTS", posts);
+       await commit("SET_POSTS", posts);
       } catch (error) {
         console.error(error);
       }

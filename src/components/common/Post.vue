@@ -1,20 +1,29 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-    <div class="bg-white px-4 py-5 sm:px-6 flex flex-col  rounded-xl">
-        <div class="flex space-x-3 mb-4">
-            <div class="flex-shrink-0">
-                <img class="h-10 w-10 rounded-full" src="../../assest/social logo.png" alt="" />
+    <!-- {{ posts[0] }} -->
+    <div class="bg-white p-4 sm:p-6 flex flex-col  rounded-xl">
+
+        <div class="flex  mb-4 py-1 items-center">
+            <div class="flex-shrink-0 mr-3">
+                <img class="h-10 w-10 rounded-full"
+                    src="https://i.pinimg.com/550x/2d/1c/98/2d1c982d5c164860b84e9d670581bab2.jpg" alt="" />
             </div>
-            <div class="min-w-0 flex-1">
+            <div class="min-w-0 flex-0">
                 <p class="text-sm font-medium text-gray-900">
-                    <span class="hover:underline">Chelsea Hagon</span>
+                    <span>khaled walead</span>
                 </p>
                 <p class="text-sm text-gray-500">
-                    <span class="hover:underline">December 9 at 11:43 AM</span>
+                    <span>December 9 at 11:43 AM</span>
                 </p>
             </div>
+            <div class="flex-1 items-center">
+                <button class=" py-2 px-4 rounded-lg font-semibold text-sm "
+                    :class="isFollowig ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
+                    @click="toggleFollow()">{{ isFollowig ? 'Unfollow' : 'Follow' }}</button>
+
+            </div>
             <div class="flex-shrink-0 self-center flex">
-                <Menu as="div" class="relative z-30 inline-block text-left">
+                <!-- <Menu as="div" class="relative z-30 inline-block text-left">
                     <div>
                         <MenuButton class="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                             <span class="sr-only">Open options</span>
@@ -53,30 +62,43 @@
                             </div>
                         </MenuItems>
                     </transition>
-                </Menu>
+                </Menu> -->
+
             </div>
         </div>
         <div class="min-w-0 flex-1 mb-2" @dblclick="toggleLike()">
-            <img src="../../assest/feed-1.jpg" alt="" class="rounded-lg">
+            <img src="../../assest/feed-2.jpg" alt="" class="rounded-lg">
 
         </div>
-        <div class="flex space-x-3 mb-1">
-            <div class="min-w-0 flex-1">
-                <span @dblclick="toggleLike()" class="text-2xl text-center"> <i class="uil uil-heart text-gray-500  "
-                        :class="{ 'liked': liked }"></i> </span>
+        <div class="flex space-x-3 mb-2">
+            <div class="min-w-0 flex-1 inline-flex items-center gap-2">
+                <span @click="toggleLike()" class="text-2xl text-center">
+                    <solidHeart v-if="liked" class="uil uil-heart h-8 text-red-500"></solidHeart>
+                    <HeartIcon v-else class="uil uil-heart text-gray-500 h-8 "></HeartIcon>
+                </span>
 
-                <span class="text-2xl text-center"> <i class="uil uil-comment text-gray-500  "></i> </span>
-                <span class="text-2xl text-center"> <i class="uil uil-share text-gray-500  "></i> </span>
+                <span @click="toggleSaved()" class="">
+                    <ChatIcon class="h-8 text-gray-500"></ChatIcon>
 
+
+                </span>
+                <span @click="toggleSaved()" class="">
+                    <ShareIcon class="h-8 text-gray-500"></ShareIcon>
+
+
+                </span>
             </div>
             <div class="flex-shrink-0">
-                <span class="text-2xl text-center"> <i class="uil uil-bookmark text-gray-500  "></i> </span>
+                <span @click="toggleSaved()" class="">
+                    <solidBookMark v-if="saved" class="h-8 text-gray-700"></solidBookMark>
 
+                    <BookmarkIcon v-else class=" text-gray-500 h-8 "></BookmarkIcon>
+                </span>
             </div>
 
 
         </div>
-        <div class="flex space-x-3 mb-1">
+        <div class="flex space-x-3 mb-2">
             <div class="min-w-0 flex-1 flex gap-2 items-center">
                 <div class="flex -space-x-1 overflow-hidden">
                     <img class="inline-block h-5 w-5 rounded-full ring-2 ring-white"
@@ -100,7 +122,7 @@
 
 
         </div>
-        <div class="flex space-x-3">
+        <div class="flex space-x-3 mb-2">
             <div class="min-w-0 flex-1 flex gap-2 items-center">
 
                 <p class="text-sm font-medium text-gray-500">
@@ -122,36 +144,77 @@
 
 
         </div>
+
     </div>
 </template>
   
 <script>
+import {
+    BellIcon,
+    CalendarIcon,
+    ChartBarIcon,
+    FolderIcon,
+    HomeIcon,
+    InboxIcon,
+    ShoppingBagIcon,
+    MenuAlt2Icon,
+    UsersIcon,
+    XIcon,
+    ShoppingCartIcon, ChatIcon, ShareIcon,
+    HeartIcon, BookmarkIcon
+} from '@heroicons/vue/outline'
+
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon } from '@heroicons/vue/solid'
-import { ref } from 'vue';
+import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, HeartIcon as solidHeart, BookmarkIcon as solidBookMark } from '@heroicons/vue/solid'
+import { ref, watch, computed, onMounted } from 'vue';
 
 export default {
+    components: {
+        BellIcon,
+        CalendarIcon,
+        ChartBarIcon,
+        FolderIcon,
+        HomeIcon,
+        InboxIcon,
+        ShoppingBagIcon,
+        MenuAlt2Icon,
+        UsersIcon,
+        XIcon,
+        ShoppingCartIcon, ChatIcon, ShareIcon,
+        HeartIcon, BookmarkIcon, Menu, MenuButton, MenuItem, MenuItems, solidHeart, CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, solidBookMark
+    },
+    props: {
+
+    },
     setup(props) {
+        const posts = computed(() => props.posts)
         let liked = ref(true);
         const toggleLike = () => {
-            liked.value = liked.value ? false : true
+            liked.value = !liked.value;
         }
+
+        let saved = ref(true);
+        const toggleSaved = () => {
+            saved.value = !saved.value;
+        }
+
+        let isFollowing = ref(false);
+        const toggleFollow = () => {
+            isFollowing.value = !isFollowing.value;
+        }
+
         return {
-            liked, toggleLike
-        }
-    },
-    components: {
-        Menu,
-        MenuButton,
-        MenuItem,
-        MenuItems,
-        CodeIcon,
-        DotsVerticalIcon,
-        FlagIcon,
-        StarIcon,
-    },
-}
+            liked,
+            toggleLike,
+            saved,
+            toggleSaved,
+            isFollowing,
+            toggleFollow
+        };
+    }
+};
 </script>
+
 
 <style>
 .liked {

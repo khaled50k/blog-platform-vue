@@ -1,30 +1,10 @@
 <template>
-    <Header class="main-content"></Header>
 
-    <div
-        class="grid grid-cols-1 md:grid-cols-4 items-center gap-5 py-4 container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto h-full w-full ">
-        <!-- Sidebar for medium and larger screens -->
-        <div class="md:col-span-1  hidden lg:block h-full relative outline-line">
-            <SideBar></SideBar>
-        </div>
-        <div class="md:col-span-3 lg:col-span-2 h-full flex flex-col gap-5 " >
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-            <Post></Post>
-          
-        </div>
-
-        <div class=" hidden md:block md:col-span-1 lg:col-span-1 bg-gray-200 h-full">1/4</div>
-
-    </div>
-    <FloatingNav class=" container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto "></FloatingNav>
+    <Post></Post>
+    <Post></Post>
+    <Post></Post>
+    <Post></Post>
+    <Post></Post>
 </template>
    
 <script>
@@ -42,17 +22,43 @@ import {
     XIcon,
     ShoppingCartIcon
 } from '@heroicons/vue/outline'
-import { SearchIcon } from '@heroicons/vue/solid'
+import {
+    SearchIcon,
+    ChatIcon, ShareIcon,
+    HeartIcon, BookmarkIcon
+} from '@heroicons/vue/outline'
+
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, HeartIcon as solidHeart, BookmarkIcon as solidBookMark } from '@heroicons/vue/solid'
+
 import SideBar from '../components/common/SideBar.vue';
 import FloatingNav from '../components/common/FloatingNav.vue';
 import Post from '../components/common/Post.vue';
 
 
+
+import axios from 'axios'
+import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue';
+import { useVirtualList } from "@vueuse/core";
+import { useStore } from 'vuex'
+
+
+
 export default {
     components: {
-        Header, BellIcon, SearchIcon, FloatingNav, Post,
+        Header, BellIcon, SearchIcon, FloatingNav,
         CalendarIcon,
-        ChartBarIcon,
+        ChartBarIcon, Menu,
+        MenuButton, BookmarkIcon, solidBookMark,
+        solidHeart,
+        DotsVerticalIcon,
+        MenuItem, ChatIcon,
+        MenuItems,
+        CodeIcon,
+        DotsVerticalIcon,
+        FlagIcon,
+        StarIcon,
+        HeartIcon, ShareIcon,
         FolderIcon,
         HomeIcon,
         InboxIcon,
@@ -61,18 +67,39 @@ export default {
         UsersIcon,
         XIcon,
         ShoppingCartIcon,
+        Post,
         SideBar
     },
     setup(props) {
+        const store = useStore();
+        const data = ref(null);
+        const isLoading = ref(true);
 
+        let liked = ref(true);
+        const toggleLike = () => {
+            liked.value = liked.value ? false : true
+        }
+        let saved = ref(true);
+        const toggleSaved = () => {
+            saved.value = saved.value ? false : true
+        }
+        let isFollowig = ref(false);
+        const toggleFollow = () => {
+            isFollowig.value = isFollowig.value ? false : true
+        }
+
+
+
+        return {
+
+            liked, toggleLike, saved, toggleSaved, isFollowig, toggleFollow, isLoading, data
+
+        };
     }
 }
 </script>
    
 <style>
-.main-content {
-    position: sticky;
-    top: 0;
-}
+
 </style>
    
