@@ -24,9 +24,9 @@ export default {
     },
   },
   plugins: [
-    // ...
+
     require("@tailwindcss/forms"),
-    // require("@tailwindcss/typography"),
+
   ],
   purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
 };

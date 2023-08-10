@@ -1,9 +1,9 @@
 <template>
   
-  <header class="bg-white fixed left-0  w-full top-0 py-2  ">
+  <header class="bg-white fixed left-0  w-full top-0 py-2 w-[inherit] ">
 
     <div
-      class="container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto flex justify-between items-center w-full">
+      class="container flex justify-between items-center w-[inherit]">
       <h1 class="text-xl font-semibold text-gray-600">Social App</h1>
       <div class="bg-gray-100 flex  w-150 items-center justify-center rounded-md py-1 px-3 md:flex hidden">
         <!-- Updated class for hiding on mobile screens -->
@@ -15,7 +15,7 @@
         <div>
           <MenuButton class="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
             <span class="sr-only">Open options</span>
-            <img class="inline-block h-10 w-10 rounded-full" src="https://i.pinimg.com/550x/2d/1c/98/2d1c982d5c164860b84e9d670581bab2.jpg" alt="" />
+            <img class="inline-block h-10 w-10 rounded-full" :src="user.profilePicture" :alt="user.username +' profile picture'" />
           </MenuButton>
         </div>
 
@@ -72,6 +72,13 @@ export default {
     }
   },
 }
+</script>
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+
+const store=useStore();
+const user=computed(()=>store.getters.getUser)
 </script>
 
 <style></style>

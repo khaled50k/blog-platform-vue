@@ -6,12 +6,31 @@ export const store = new Vuex.Store({
   state: {
     user: {},
     posts: [],
+    isLoadingPosts: false,
   },
-  getters:{
-    getPosts:(state)=> state.posts
+  getters: {
+    getPosts: (state) => state.posts,
+    getIsLoading: (state) => state.isLoadingPosts,
+    getUser: (state) => state.user,
+    getIsFollowingAuthor: (state) => (authorId) => {
+      const isFollowing = state.user.following.find(
+        (user) => user._id == authorId
+      );
+      if (isFollowing) {
+        return true;
+      }
+      return false;
+    },
+    getIsPostLiked: (state) => (postId) => {
+      const isLiked = state.posts.find((post) => post._id == postId);
+      if (isLiked) {
+        return true;
+      }
+      return false;
+    },
   },
   mutations: {
-   async SET_POSTS(state, posts) {
+    async SET_POSTS(state, posts) {
       state.posts = await posts;
     },
     ADD_POST(state, post) {
@@ -20,15 +39,53 @@ export const store = new Vuex.Store({
     DELETE_POST(state, postId) {
       state.posts = state.posts.filter((post) => post.id !== postId);
     },
+    SET_LOADING(state) {
+      state.isLoadingPosts = !state.isLoadingPosts;
+    },
+    SET_USER(state, user) {
+      state.user = user;
+    },
   },
   actions: {
     async fetchPosts({ commit }) {
       try {
         const response = await axios.get(`${API_BASE_URL}/post`);
         const posts = response.data;
-       await commit("SET_POSTS", posts);
+        await commit("SET_POSTS", posts);
       } catch (error) {
-        console.error(error);
+        return Promise.reject(error.response.data.message);
+      }
+    },
+    async fetchUser({ commit }) {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/users/data`, {
+          withCredentials: true,
+        });
+        const posts = response.data;
+        await commit("SET_USER", posts);
+      } catch (error) {
+        return Promise.reject(error.response.data.message);
+      }
+    },
+    async likePost({ commit }, postId) {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/post/${postId}/like`,
+          null, // Pass the data you want to send here
+          {
+            withCredentials: true,
+          }
+        );
+        
+
+        const res = await axios.get(`${API_BASE_URL}/post/${postId}`);
+        const updatedPost = res.data;
+        const updatedPosts = state.posts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
+        );
+        await commit("SET_POSTS", updatedPosts);
+      } catch (error) {
+        return Promise.reject(error.response);
       }
     },
     async createPost({ commit }, newPost) {

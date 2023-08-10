@@ -1,78 +1,20 @@
 <template>
-
-    <Post></Post>
-    <Post></Post>
-    <Post></Post>
-    <Post></Post>
-    <Post></Post>
+    <div 
+        class="md:col-span-3 lg:col-span-2 ml-0 flex flex-col gap-5 lg:ml-4 w-full items-center" id="posts">
+        <Post v-for="post in posts" :post="post" :key="post._id" id="post"></Post>
+    </div>
 </template>
-   
+  
 <script>
-import Header from '../components/common/Header.vue';
-import {
-    BellIcon,
-    CalendarIcon,
-    ChartBarIcon,
-    FolderIcon,
-    HomeIcon,
-    InboxIcon,
-    ShoppingBagIcon,
-    MenuAlt2Icon,
-    UsersIcon,
-    XIcon,
-    ShoppingCartIcon
-} from '@heroicons/vue/outline'
-import {
-    SearchIcon,
-    ChatIcon, ShareIcon,
-    HeartIcon, BookmarkIcon
-} from '@heroicons/vue/outline'
 
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
-import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, HeartIcon as solidHeart, BookmarkIcon as solidBookMark } from '@heroicons/vue/solid'
-
-import SideBar from '../components/common/SideBar.vue';
-import FloatingNav from '../components/common/FloatingNav.vue';
 import Post from '../components/common/Post.vue';
-
-
-
-import axios from 'axios'
 import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue';
-import { useVirtualList } from "@vueuse/core";
 import { useStore } from 'vuex'
-
-
-
 export default {
     components: {
-        Header, BellIcon, SearchIcon, FloatingNav,
-        CalendarIcon,
-        ChartBarIcon, Menu,
-        MenuButton, BookmarkIcon, solidBookMark,
-        solidHeart,
-        DotsVerticalIcon,
-        MenuItem, ChatIcon,
-        MenuItems,
-        CodeIcon,
-        DotsVerticalIcon,
-        FlagIcon,
-        StarIcon,
-        HeartIcon, ShareIcon,
-        FolderIcon,
-        HomeIcon,
-        InboxIcon,
-        ShoppingBagIcon,
-        MenuAlt2Icon,
-        UsersIcon,
-        XIcon,
-        ShoppingCartIcon,
         Post,
-        SideBar
     },
     setup(props) {
-        const store = useStore();
-        const data = ref(null);
         const isLoading = ref(true);
 
         let liked = ref(true);
@@ -88,18 +30,25 @@ export default {
             isFollowig.value = isFollowig.value ? false : true
         }
 
-
-
+   
         return {
 
-            liked, toggleLike, saved, toggleSaved, isFollowig, toggleFollow, isLoading, data
+            liked, toggleLike, saved, toggleSaved, isFollowig, toggleFollow, isLoading
 
         };
     }
 }
 </script>
-   
-<style>
+<script setup>
+import { useStore } from 'vuex'
+import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue';
+import { useVirtualList } from "@vueuse/core";
 
-</style>
+// Create a virtual list instance
+const store = useStore();
+const posts = computed(() => store.getters.getPosts);
+
+</script>
+   
+<style></style>
    

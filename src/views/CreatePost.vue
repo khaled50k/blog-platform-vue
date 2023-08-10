@@ -1,7 +1,7 @@
 
 <template>
-  
-    <div class="bg-white p-4 sm:p-6 flex flex-col  rounded-xl">
+  <div class="sm:w-[500px] h-screen">
+    <div class="bg-white p-4 sm:p-6 flex flex-col  rounded-xl ">
 
         <div class="flex  mb-4 py-1 items-center  flex-col w-full gap-5">
             <div class="min-w-0 flex-0 w-full flex flex-col gap-2">
@@ -50,7 +50,7 @@
         </div>
 
 
-</div>
+</div></div>
     <!-- -------------------------------------------- -->
 </template>
     

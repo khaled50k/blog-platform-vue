@@ -1,4 +1,5 @@
 <template>
+   
     <div class="mobile-menu flex gap-4 items-center flex-shrink-0 bg-white rounded-xl fixed-113">
         <ul class="flex gap-1 w-full">
             <li class="w-full">

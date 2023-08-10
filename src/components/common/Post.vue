@@ -1,25 +1,24 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <template>
     <!-- {{ posts[0] }} -->
-    <div class="bg-white p-4 sm:p-6 flex flex-col  rounded-xl">
+    <div class="bg-white p-3 sm:p-4 flex flex-col  rounded-xl ">
 
-        <div class="flex  mb-4 py-1 items-center">
+        <div class="flex  mb-4 py-1 items-center ">
             <div class="flex-shrink-0 mr-3">
-                <img class="h-10 w-10 rounded-full"
-                    src="https://i.pinimg.com/550x/2d/1c/98/2d1c982d5c164860b84e9d670581bab2.jpg" alt="" />
+                <img class="h-10 w-10 rounded-full cursor-pointer" :src="post.author.profilePicture" alt="" />
             </div>
             <div class="min-w-0 flex-0">
                 <p class="text-sm font-medium text-gray-900">
-                    <span>khaled walead</span>
+                    <span class="cursor-pointer">{{ post.author.username }}</span>
                 </p>
                 <p class="text-sm text-gray-500">
-                    <span>December 9 at 11:43 AM</span>
+                    <span>{{ timeAgo(post.createdAt) }}</span>
                 </p>
             </div>
             <div class="flex-1 items-center">
                 <button class=" py-2 px-4 rounded-lg font-semibold text-sm "
-                    :class="isFollowig ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
-                    @click="toggleFollow()">{{ isFollowig ? 'Unfollow' : 'Follow' }}</button>
+                    :class="isFollowing ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
+                    @click="toggleFollow()">{{ isFollowing ? 'Unfollow' : 'Follow' }}</button>
 
             </div>
             <div class="flex-shrink-0 self-center flex">
@@ -67,32 +66,32 @@
             </div>
         </div>
         <div class="min-w-0 flex-1 mb-2" @dblclick="toggleLike()">
-            <img src="../../assest/feed-2.jpg" alt="" class="rounded-lg">
+            <img :src="post.postPicture" alt="" class=" w-full h-full rounded-lg">
 
         </div>
         <div class="flex space-x-3 mb-2">
             <div class="min-w-0 flex-1 inline-flex items-center gap-2">
                 <span @click="toggleLike()" class="text-2xl text-center">
-                    <solidHeart v-if="liked" class="uil uil-heart h-8 text-red-500"></solidHeart>
-                    <HeartIcon v-else class="uil uil-heart text-gray-500 h-8 "></HeartIcon>
+                    <solidHeart v-if="isLiked" class="uil uil-heart h-8 text-red-500 cursor-pointer"></solidHeart>
+                    <HeartIcon v-else class="uil uil-heart text-gray-500 h-8 cursor-pointer"></HeartIcon>
                 </span>
 
                 <span @click="toggleSaved()" class="">
-                    <ChatIcon class="h-8 text-gray-500"></ChatIcon>
+                    <ChatIcon class="h-8 text-gray-500 cursor-pointer"></ChatIcon>
 
 
                 </span>
                 <span @click="toggleSaved()" class="">
-                    <ShareIcon class="h-8 text-gray-500"></ShareIcon>
+                    <ShareIcon class="h-8 text-gray-500 cursor-pointer"></ShareIcon>
 
 
                 </span>
             </div>
             <div class="flex-shrink-0">
                 <span @click="toggleSaved()" class="">
-                    <solidBookMark v-if="saved" class="h-8 text-gray-700"></solidBookMark>
+                    <solidBookMark v-if="saved" class="h-8 text-gray-700 cursor-pointer"></solidBookMark>
 
-                    <BookmarkIcon v-else class=" text-gray-500 h-8 "></BookmarkIcon>
+                    <BookmarkIcon v-else class=" text-gray-500 h-8 cursor-pointer"></BookmarkIcon>
                 </span>
             </div>
 
@@ -101,22 +100,22 @@
         <div class="flex space-x-3 mb-2">
             <div class="min-w-0 flex-1 flex gap-2 items-center">
                 <div class="flex -space-x-1 overflow-hidden">
-                    <img class="inline-block h-5 w-5 rounded-full ring-2 ring-white"
-                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt="" />
-                    <img class="inline-block h-5 w-5 rounded-full ring-2 ring-white"
-                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt="" />
-                    <img class="inline-block h-5 w-5 rounded-full ring-2 ring-white"
-                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
-                        alt="" />
-                    <img class="inline-block h-5 w-5 rounded-full ring-2 ring-white"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt="" />
+                    <img v-for="(like, index) in post.likes.slice(0, 3)" :key="index"
+                        class="inline-block h-5 w-5 rounded-full ring-2 ring-white" :src="like.author.profilePicture"
+                        :alt="like.author.username + ' profile picture'" />
                 </div>
-                <p class="text-sm font-medium text-gray-500">
-                    <span class="">Liked by <b class="text-gray-900">Ersant Achieverand</b> 3.510 others</span>
-
+                <p class="text-sm font-medium text-gray-500 ">
+                    <span v-if="post.likes.length === 0">
+                        <b class="text-gray-900 cursor-pointer">{{ }}</b>
+                    </span>
+                    <span v-else-if="post.likes.length === 1">
+                        Liked by <b class="text-gray-900 cursor-pointer">{{ post.likes[0].author.username }}</b>
+                    </span>
+                    <span v-else>
+                        Liked by <b class="text-gray-900 cursor-pointer">{{ post.likes[0].author.username }}</b> and {{
+                            post.likes.length -
+                            1 }} others
+                    </span>
                 </p>
             </div>
 
@@ -126,7 +125,8 @@
             <div class="min-w-0 flex-1 flex gap-2 items-center">
 
                 <p class="text-sm font-medium text-gray-500">
-                    <span class=""><b class="text-gray-900">Lana HaleLorem </b> ipsum dolor sit amet. #lifestyle</span>
+                    <span class=""><b class="text-gray-900 cursor-pointer">{{ post.author.username }} </b> {{ post.content
+                    }}</span>
 
                 </p>
             </div>
@@ -137,14 +137,14 @@
             <div class="min-w-0 flex-1 flex gap-2 items-center">
 
                 <p class="text-sm font-medium text-gray-500">
-                    <span class="">View all 25 comment</span>
-
+                    <span v-if="post.comments.length >= 1" class="cursor-pointer">View all {{ post.comments.length }}
+                        comment</span>
+                    <span v-else>No comments available</span>
                 </p>
             </div>
 
 
         </div>
-
     </div>
 </template>
   
@@ -167,6 +167,9 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, HeartIcon as solidHeart, BookmarkIcon as solidBookMark } from '@heroicons/vue/solid'
 import { ref, watch, computed, onMounted } from 'vue';
+import { array } from 'yup';
+import { useStore } from 'vuex';
+
 
 export default {
     components: {
@@ -184,32 +187,69 @@ export default {
         HeartIcon, BookmarkIcon, Menu, MenuButton, MenuItem, MenuItems, solidHeart, CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, solidBookMark
     },
     props: {
-
+        post: {
+            required: true,
+            type: Object
+        }
     },
     setup(props) {
-        const posts = computed(() => props.posts)
-        let liked = ref(true);
+        const store = useStore()
+        const post = computed(() => props.post)
+        const length = (array) => {
+            return array.length
+        }
+        const timeAgo = (timestamp) => {
+
+            const now = new Date();
+            const timestampDate = new Date(timestamp);
+
+            const secondsAgo = Math.floor((now - timestampDate) / 1000);
+
+            if (secondsAgo < 60) {
+                return "just a moment ago";
+            } else if (secondsAgo < 3600) {
+                const minutesAgo = Math.floor(secondsAgo / 60);
+                return `${minutesAgo} ${minutesAgo === 1 ? 'minute' : 'minutes'} ago`;
+            } else if (secondsAgo < 86400) {
+                const hoursAgo = Math.floor(secondsAgo / 3600);
+                return `${hoursAgo} ${hoursAgo === 1 ? 'hour' : 'hours'} ago`;
+            } else if (secondsAgo < 2592000) {
+                const daysAgo = Math.floor(secondsAgo / 86400);
+                return `${daysAgo} ${daysAgo === 1 ? 'day' : 'days'} ago`;
+            } else if (secondsAgo < 31536000) {
+                const monthsAgo = Math.floor(secondsAgo / 2592000);
+                return `${monthsAgo} ${monthsAgo === 1 ? 'month' : 'months'} ago`;
+            } else {
+                const yearsAgo = Math.floor(secondsAgo / 31536000);
+                return `${yearsAgo} ${yearsAgo === 1 ? 'year' : 'years'} ago`;
+            }
+        }
+
+
+
         const toggleLike = () => {
-            liked.value = !liked.value;
+           store.dispatch('likePost',post.value._id)
         }
 
         let saved = ref(true);
         const toggleSaved = () => {
             saved.value = !saved.value;
         }
+        const user = computed(() => store.getters.getUser)
 
-        let isFollowing = ref(false);
+        const isFollowing = computed(() => store.getters.getIsFollowingAuthor(post.value.author._id));
+        const isLiked = computed(() => store.getters.getIsPostLiked(post.value.author._id));
         const toggleFollow = () => {
-            isFollowing.value = !isFollowing.value;
+            // isFollowing.value = !isFollowing.value;
         }
 
         return {
-            liked,
+            isLiked,
             toggleLike,
             saved,
             toggleSaved,
-            isFollowing,
-            toggleFollow
+            toggleFollow,
+            post, timeAgo, length, isFollowing
         };
     }
 };
