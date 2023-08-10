@@ -1,5 +1,6 @@
 <template>
-    <div class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden">
+    <div
+        class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden">
 
         <div class="flex  mb-4 py-1 items-center ">
             <div class="flex-shrink-0 mr-3">
@@ -17,13 +18,15 @@
                 <span class="material-icons text-blue-500 cursor-pointer">verified</span>
             </div>
             <div class="flex-1 items-center flex  ">
-                <div v-if="isFollowLoading" class="flex justify-center items-center "  :class="isFollowing ? 'w-[68px]' : ' w-[81px]'">
-                    <div class="custom-loader " ></div>
+                <div v-if="isFollowLoading" class="flex justify-center items-center "
+                    :class="isFollowing ? 'w-[68px]' : ' w-[81px]'">
+                    <div class="custom-loader "></div>
 
                 </div>
-                <button v-else class=" py-2 px-4 rounded-lg font-semibold text-sm text-end border-0 bg-transparent hover:bg-gray-100 hover:text-primary"
-    :class="isFollowing ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
-    @click="toggleFollow()">{{ isFollowing ? 'Unfollow' : 'Follow' }}</button>
+                <button v-else
+                    class=" py-2 px-4 rounded-lg font-semibold text-sm text-end border-0 bg-transparent hover:bg-gray-100 hover:text-primary"
+                    :class="isFollowing ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
+                    @click="toggleFollow()">{{ isFollowing ? 'Unfollow' : 'Follow' }}</button>
 
 
 
@@ -339,5 +342,4 @@ export default {
     100% {
         transform: rotate(1turn)
     }
-}
-</style>
+}</style>
