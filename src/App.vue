@@ -108,7 +108,7 @@ export default {
 }
 </script>
    
-<style>
+<style scoped>
 .route-fade-enter-active, .route-fade-leave-active {
   transition: opacity 5s;
 }

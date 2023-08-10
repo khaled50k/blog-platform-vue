@@ -1,13 +1,11 @@
-<!-- This example requires Tailwind CSS v2.0+ -->
 <template>
-    <!-- {{ posts[0] }} -->
-    <div class="bg-white p-3 sm:p-4 flex flex-col  rounded-xl ">
+    <div class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden">
 
         <div class="flex  mb-4 py-1 items-center ">
             <div class="flex-shrink-0 mr-3">
                 <img class="h-10 w-10 rounded-full cursor-pointer" :src="post.author.profilePicture" alt="" />
             </div>
-            <div class="min-w-0 flex-0">
+            <div class="min-w-0 flex-0  mr-3">
                 <p class="text-sm font-medium text-gray-900">
                     <span class="cursor-pointer">{{ post.author.username }}</span>
                 </p>
@@ -15,14 +13,23 @@
                     <span>{{ timeAgo(post.createdAt) }}</span>
                 </p>
             </div>
-            <div class="flex-1 items-center">
-                <button class=" py-2 px-4 rounded-lg font-semibold text-sm "
-                    :class="isFollowing ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
-                    @click="toggleFollow()">{{ isFollowing ? 'Unfollow' : 'Follow' }}</button>
+            <div class="flex-shrink-0 mr-3 flex items-center" v-if="post.author.isVerified">
+                <span class="material-icons text-blue-500 cursor-pointer">verified</span>
+            </div>
+            <div class="flex-1 items-center flex  ">
+                <div v-if="isFollowLoading" class="flex justify-center items-center "  :class="isFollowing ? 'w-[68px]' : ' w-[81px]'">
+                    <div class="custom-loader " ></div>
+
+                </div>
+                <button v-else class=" py-2 px-4 rounded-lg font-semibold text-sm text-end border-0 bg-transparent hover:bg-gray-100 hover:text-primary"
+    :class="isFollowing ? 'text-gray-900 hover:text-primary' : 'text-primary hover:text-gray-900 '"
+    @click="toggleFollow()">{{ isFollowing ? 'Unfollow' : 'Follow' }}</button>
+
+
 
             </div>
             <div class="flex-shrink-0 self-center flex">
-                <!-- <Menu as="div" class="relative z-30 inline-block text-left">
+                <Menu as="div" class="relative z-30 inline-block text-left">
                     <div>
                         <MenuButton class="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                             <span class="sr-only">Open options</span>
@@ -61,7 +68,7 @@
                             </div>
                         </MenuItems>
                     </transition>
-                </Menu> -->
+                </Menu>
 
             </div>
         </div>
@@ -98,7 +105,7 @@
 
         </div>
         <div class="flex space-x-3 mb-2">
-            <div class="min-w-0 flex-1 flex gap-2 items-center">
+            <div class="min-w-0 flex-1 flex gap-2 items-center h-[20px]">
                 <div class="flex -space-x-1 overflow-hidden">
                     <img v-for="(like, index) in post.likes.slice(0, 3)" :key="index"
                         class="inline-block h-5 w-5 rounded-full ring-2 ring-white" :src="like.author.profilePicture"
@@ -106,7 +113,7 @@
                 </div>
                 <p class="text-sm font-medium text-gray-500 ">
                     <span v-if="post.likes.length === 0">
-                        <b class="text-gray-900 cursor-pointer">{{ }}</b>
+                        <b class="text-sm font-medium text-gray-500">No likes yet </b>
                     </span>
                     <span v-else-if="post.likes.length === 1">
                         Liked by <b class="text-gray-900 cursor-pointer">{{ post.likes[0].author.username }}</b>
@@ -194,7 +201,17 @@ export default {
     },
     setup(props) {
         const store = useStore()
-        const post = computed(() => props.post)
+        const user = computed(() => store.getters.getUser)
+        const isLiked = ref(false);
+        const isFollowLoading = ref(false);
+        const post = computed(() => {
+            isLiked.value = props.post.likes.some((like) => {
+                const boolean = like.author._id == user.value._id
+                return boolean;
+            });
+
+            return props.post
+        })
         const length = (array) => {
             return array.length
         }
@@ -224,23 +241,43 @@ export default {
                 return `${yearsAgo} ${yearsAgo === 1 ? 'year' : 'years'} ago`;
             }
         }
-
-
-
-        const toggleLike = () => {
-           store.dispatch('likePost',post.value._id)
-        }
-
         let saved = ref(true);
         const toggleSaved = () => {
             saved.value = !saved.value;
         }
-        const user = computed(() => store.getters.getUser)
 
-        const isFollowing = computed(() => store.getters.getIsFollowingAuthor(post.value.author._id));
-        const isLiked = computed(() => store.getters.getIsPostLiked(post.value.author._id));
-        const toggleFollow = () => {
-            // isFollowing.value = !isFollowing.value;
+        const isFollowing = computed(() => user.value.following.some((user) => user._id == post.value.author._id));
+
+        const toggleFollow = async () => {
+            if (!isFollowLoading.value) {
+                isFollowLoading.value = true;
+
+                try {
+                    isFollowing.value = !isFollowing.value;
+
+                    if (!isFollowing.value) {
+                        await store.dispatch('followUser', post.value.author._id);
+                    } else {
+                        await store.dispatch('unFollowUser', post.value.author._id);
+                    }
+                } catch (error) {
+                    // Handle any errors that might occur during API requests
+                    console.error(error);
+                }
+
+                isFollowLoading.value = false;
+            }
+
+
+        }
+        const toggleLike = () => {
+            isLiked.value = !isLiked.value;
+            if (isLiked.value) {
+                post.value.likes = [...post.value.likes, { author: user.value }];
+            } else {
+                post.value.likes = post.value.likes.filter((like) => like.author._id != user.value._id);
+            }
+            store.dispatch('likePost', post.value._id);
         }
 
         return {
@@ -249,16 +286,58 @@ export default {
             saved,
             toggleSaved,
             toggleFollow,
-            post, timeAgo, length, isFollowing
+            post, timeAgo, length, isFollowing, user, isFollowLoading
         };
     }
 };
 </script>
 
 
-<style>
+<style scoped>
+/* .post {
+  width: 100%;
+  max-width: 400px;
+  max-height: 500px;
+  border: 1px solid gray;
+  margin: 10px;
+} */
+
 .liked {
     color: red;
     /* Example styling for a liked state */
+}
+
+.custom-loader {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    border-radius: 50%;
+    -webkit-mask: radial-gradient(farthest-side, #0000 40%, #000 41%);
+    background:
+        linear-gradient(0deg, #766DF480 50%, #766DF4FF 0) center/4px 100%,
+        linear-gradient(90deg, #766DF440 50%, #766DF4BF 0) center/100% 4px;
+    background-repeat: no-repeat;
+    animation: s3 1s infinite steps(12);
+}
+
+.custom-loader::before,
+.custom-loader::after {
+    content: "";
+    grid-area: 1/1;
+    border-radius: 50%;
+    background: inherit;
+    opacity: 0.915;
+    transform: rotate(30deg);
+}
+
+.custom-loader::after {
+    opacity: 0.83;
+    transform: rotate(60deg);
+}
+
+@keyframes s3 {
+    100% {
+        transform: rotate(1turn)
+    }
 }
 </style>

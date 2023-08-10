@@ -10,6 +10,8 @@
                     <p class="text-gray-400">@{{ user.username }}</p>
 
                 </div>
+                <span class="material-icons text-blue-500 cursor-pointer">verified</span>
+
             </div>
 
             <div class="flex gap-4 items-center flex-shrink-0  bg-white   rounded-xl w-full">

@@ -21,10 +21,11 @@ export const store = new Vuex.Store({
       }
       return false;
     },
-    getIsPostLiked: (state) => (postId) => {
-      const isLiked = state.posts.find((post) => post._id == postId);
-      if (isLiked) {
-        return true;
+    getIsPostLiked: (state)=>(postId, userId) => {
+      const post = state.posts.find((p) => p._id == postId);
+      
+      if (post) {
+        return post.likes.some((like) => like.author._id == userId);
       }
       return false;
     },
@@ -67,7 +68,7 @@ export const store = new Vuex.Store({
         return Promise.reject(error.response.data.message);
       }
     },
-    async likePost({ commit }, postId) {
+    async likePost({ commit, state }, postId) {
       try {
         const response = await axios.post(
           `${API_BASE_URL}/post/${postId}/like`,
@@ -76,14 +77,47 @@ export const store = new Vuex.Store({
             withCredentials: true,
           }
         );
-        
-
         const res = await axios.get(`${API_BASE_URL}/post/${postId}`);
+
         const updatedPost = res.data;
-        const updatedPosts = state.posts.map((post) =>
-          post._id === updatedPost._id ? updatedPost : post
-        );
+        const updatedPosts = state.posts.map((post) => {
+          if (post._id === updatedPost._id) {
+            return updatedPost;
+          } else {
+            return post;
+          }
+        });
         await commit("SET_POSTS", updatedPosts);
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    async followUser({ commit, state,dispatch }, userId) {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/users/${userId}/follow`,
+          null, // Pass the data you want to send here
+          {
+            withCredentials: true,
+          }
+        );
+       
+        await dispatch("fetchUser");
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    async unFollowUser({ commit, state,dispatch }, userId) {
+      try {
+        const response = await axios.delete(
+          `${API_BASE_URL}/users/${userId}/follow`,
+// Pass the data you want to send here
+          {
+            withCredentials: true,
+          }
+        );
+       
+        await dispatch("fetchUser");
       } catch (error) {
         return Promise.reject(error.response);
       }
