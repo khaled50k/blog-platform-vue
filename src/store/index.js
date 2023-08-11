@@ -21,9 +21,9 @@ export const store = new Vuex.Store({
       }
       return false;
     },
-    getIsPostLiked: (state)=>(postId, userId) => {
+    getIsPostLiked: (state) => (postId, userId) => {
       const post = state.posts.find((p) => p._id == postId);
-      
+
       if (post) {
         return post.likes.some((like) => like.author._id == userId);
       }
@@ -92,7 +92,44 @@ export const store = new Vuex.Store({
         return Promise.reject(error.response);
       }
     },
-    async followUser({ commit, state,dispatch }, userId) {
+    async createPost({ commit, dispatch }, data) {
+      try {
+        const response = await axios.post(`${API_BASE_URL}/post/`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        });
+    
+        // Dispatch the 'fetchPosts' action to update the list of posts
+        await dispatch("fetchPosts");
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    
+    async uploadImage({ commit, state }, { data }) {
+      try {
+        const formData = new FormData();
+        formData.append("photo", data.photo); // Assuming `data.photo` is the file input from the form
+
+        const response = await axios.post(
+          `${API_BASE_URL}/upload/photo`,
+          data, // Pass the FormData object
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+          }
+        );
+
+        return response.data;
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    async followUser({ commit, state, dispatch }, userId) {
       try {
         const response = await axios.post(
           `${API_BASE_URL}/users/${userId}/follow`,
@@ -101,22 +138,22 @@ export const store = new Vuex.Store({
             withCredentials: true,
           }
         );
-       
+
         await dispatch("fetchUser");
       } catch (error) {
         return Promise.reject(error.response);
       }
     },
-    async unFollowUser({ commit, state,dispatch }, userId) {
+    async unFollowUser({ commit, state, dispatch }, userId) {
       try {
         const response = await axios.delete(
           `${API_BASE_URL}/users/${userId}/follow`,
-// Pass the data you want to send here
+          // Pass the data you want to send here
           {
             withCredentials: true,
           }
         );
-       
+
         await dispatch("fetchUser");
       } catch (error) {
         return Promise.reject(error.response);

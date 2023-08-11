@@ -19,6 +19,7 @@
     "@vueuse/core": "^10.3.0",
     "axios": "^1.4.0",
     "socket.io-client": "^4.7.2",
+    "uuid": "^9.0.0",
     "vee-validate": "^4.5.8",
     "vue": "^3.2.47",
     "vue-cookies": "^1.8.3",
