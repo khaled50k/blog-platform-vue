@@ -59,6 +59,7 @@ import { ref } from 'vue'
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { CheckIcon } from '@heroicons/vue/outline'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default {
     components: {
@@ -71,6 +72,7 @@ export default {
     },
     setup(props, { emit }) {
         const store = useStore()
+        const router = useRouter()
         const post = ref({ postPicture: '', content: '' })
         const uploadImage = async (event) => {
             const files = event.target.files;
@@ -93,7 +95,18 @@ export default {
             }
         };
         const createPost = () => {
-            store.dispatch('createPost', post.value)
+            try {
+
+                store.dispatch('createPost', post.value)
+                store.commit('SET_LOADING')
+                setTimeout(() => {
+                    
+                    router.push({name:"Home"})
+                    store.commit('SET_LOADING')
+                }, 2000);
+            } catch (error) {
+                
+            }
         }
         return {
             uploadImage, post,createPost

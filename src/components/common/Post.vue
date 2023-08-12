@@ -2,14 +2,17 @@
     <div
         class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden">
 
-        <div class="flex  mb-4 py-1 items-center ">
+        <div class="flex  mb-4 py-1 items-center">
             <div class="flex-shrink-0 mr-3">
-                <img class="h-10 w-10 rounded-full cursor-pointer" :src="post.author.profilePicture" alt="" />
+                <router-link :to="{name:'Profile',params:{userId:post.author._id}}">                <img class="h-10 w-10 rounded-full cursor-pointer" :src="post.author.profilePicture" alt="" />
+</router-link>
             </div>
             <div class="min-w-0 flex-0  mr-3">
+                <router-link :to="{name:'Profile',params:{userId:post.author._id}}">    
                 <p class="text-sm font-medium text-gray-900">
                     <span class="cursor-pointer">{{ post.author.username }}</span>
                 </p>
+                </router-link>
                 <p class="text-sm text-gray-500">
                     <span>{{ timeAgo(post.createdAt) }}</span>
                 </p>
@@ -17,8 +20,9 @@
             <div class="flex-shrink-0 mr-3 flex items-center" v-if="post.author.isVerified">
                 <span class="material-icons text-blue-500 cursor-pointer">verified</span>
             </div>
-            <div class="flex-1 items-center flex  ">
-                <div v-if="isFollowLoading" class="flex justify-center items-center "
+            <div class="flex-1 items-center flex  "  >
+                <div v-if="user._id==post.author._id"></div>
+                <div  v-else-if="isFollowLoading" class="flex justify-center items-center "
                     :class="isFollowing ? 'w-[68px]' : ' w-[81px]'">
                     <div class="custom-loader "></div>
 
@@ -87,21 +91,21 @@
                 </span>
 
                 <span @click="toggleSaved()" class="">
-                    <ChatIcon class="h-8 text-gray-500 cursor-pointer"></ChatIcon>
+                    <!-- <ChatIcon class="h-8 text-gray-500 cursor-pointer"></ChatIcon> -->
 
 
                 </span>
                 <span @click="toggleSaved()" class="">
-                    <ShareIcon class="h-8 text-gray-500 cursor-pointer"></ShareIcon>
+                    <!-- <ShareIcon class="h-8 text-gray-500 cursor-pointer"></ShareIcon> -->
 
 
                 </span>
             </div>
             <div class="flex-shrink-0">
                 <span @click="toggleSaved()" class="">
-                    <solidBookMark v-if="saved" class="h-8 text-gray-700 cursor-pointer"></solidBookMark>
+                    <!-- <solidBookMark v-if="saved" class="h-8 text-gray-700 cursor-pointer"></solidBookMark> -->
 
-                    <BookmarkIcon v-else class=" text-gray-500 h-8 cursor-pointer"></BookmarkIcon>
+                    <!-- <BookmarkIcon v-else class=" text-gray-500 h-8 cursor-pointer"></BookmarkIcon> -->
                 </span>
             </div>
 

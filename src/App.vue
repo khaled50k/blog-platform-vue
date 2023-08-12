@@ -9,12 +9,13 @@
             class="  hidden lg:block  outline-line   container max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto w-full ">
             <SideBar></SideBar>
         </div>
-        <div
-            class="container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl flex justify-start items-start w-full  " style="height: 100%; max-height:100% ;">
-            <div class="  ml-0 mt-[64px]   py-4 lg:ml-[250px] items-start justify-center flex w-full min-h-full " style="width: 100%; max-width:100% ">
-        
-                <router-view class="w-full h-full" ></router-view>
-  
+        <div class="container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl flex justify-start items-start w-full  "
+            style="height: 100%; max-height:100% ;">
+            <div class="  ml-0 mt-[64px]   py-4 lg:ml-[250px] items-start justify-center flex w-full min-h-full "
+                style="width: 100%; max-width:100% ">
+
+                <router-view class="w-full h-full"></router-view>
+
             </div>
             <FloatingNav class="w-full"></FloatingNav>
         </div>
@@ -97,7 +98,7 @@ export default {
             isFollowig.value = isFollowig.value ? false : true
         }
 
-
+      
 
         return {
 
@@ -109,12 +110,16 @@ export default {
 </script>
    
 <style scoped>
-.route-fade-enter-active, .route-fade-leave-active {
-  transition: opacity 5s;
+.route-fade-enter-active,
+.route-fade-leave-active {
+    transition: opacity 5s;
 }
-.route-fade-enter, .route-fade-leave-to {
-  opacity: 0;
+
+.route-fade-enter,
+.route-fade-leave-to {
+    opacity: 0;
 }
+
 .marg {
     margin-top: 64px;
     margin-left: 388px;
@@ -133,6 +138,5 @@ export default {
     to {
         transform: rotate(.5turn)
     }
-}
-</style>
+}</style>
    

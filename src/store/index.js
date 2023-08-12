@@ -5,6 +5,7 @@ const API_BASE_URL = "http://localhost:5000/api"; // Adjust this to match your A
 export const store = new Vuex.Store({
   state: {
     user: {},
+    users: [],
     posts: [],
     isLoadingPosts: false,
   },
@@ -29,6 +30,12 @@ export const store = new Vuex.Store({
       }
       return false;
     },
+    getPostById: (state) => (postId) => {
+      return state.posts.find((post) => post._id === postId);
+    },
+    getUserById: (state) => (userId) => {
+      return state.users.find((user) => user._id === userId);
+    },
   },
   mutations: {
     async SET_POSTS(state, posts) {
@@ -40,32 +47,54 @@ export const store = new Vuex.Store({
     DELETE_POST(state, postId) {
       state.posts = state.posts.filter((post) => post.id !== postId);
     },
-    SET_LOADING(state) {
-      state.isLoadingPosts = !state.isLoadingPosts;
-    },
     SET_USER(state, user) {
       state.user = user;
+    },
+    Add_USER(state, user) {
+      state.users.push(user);
+    },
+    SET_LOADING(state, isLoading) {
+      state.isLoadingPosts = isLoading;
     },
   },
   actions: {
     async fetchPosts({ commit }) {
       try {
+        commit("SET_LOADING", true);
         const response = await axios.get(`${API_BASE_URL}/post`);
         const posts = response.data;
-        await commit("SET_POSTS", posts);
+        commit("SET_POSTS", posts);
       } catch (error) {
         return Promise.reject(error.response.data.message);
+      } finally {
+        commit("SET_LOADING", false);
       }
     },
-    async fetchUser({ commit }) {
+    async fetchUserByCookie({ commit }) {
       try {
+        commit("SET_LOADING", true);
         const response = await axios.get(`${API_BASE_URL}/users/data`, {
           withCredentials: true,
         });
         const posts = response.data;
-        await commit("SET_USER", posts);
+        commit("SET_USER", posts);
       } catch (error) {
         return Promise.reject(error.response.data.message);
+      } finally {
+        commit("SET_LOADING", false);
+      }
+    },
+    async fetchUser({ commit }, id) {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/users/${id}`, {
+          withCredentials: true,
+        });
+        commit("Add_USER", response.data);
+        return await response.data;
+      } catch (error) {
+        return Promise.reject(error.response.data.message);
+      } finally {
+        commit("SET_LOADING", false)
       }
     },
     async likePost({ commit, state }, postId) {
@@ -94,20 +123,24 @@ export const store = new Vuex.Store({
     },
     async createPost({ commit, dispatch }, data) {
       try {
-        const response = await axios.post(`${API_BASE_URL}/post/`, data, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        });
-    
+        const response = await axios.post(
+          `${API_BASE_URL}/post/`,
+          JSON.stringify(data),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
         // Dispatch the 'fetchPosts' action to update the list of posts
         await dispatch("fetchPosts");
       } catch (error) {
         return Promise.reject(error.response);
       }
     },
-    
+
     async uploadImage({ commit, state }, { data }) {
       try {
         const formData = new FormData();
@@ -139,7 +172,7 @@ export const store = new Vuex.Store({
           }
         );
 
-        await dispatch("fetchUser");
+        await dispatch("fetchUserByCookie");
       } catch (error) {
         return Promise.reject(error.response);
       }
@@ -154,26 +187,9 @@ export const store = new Vuex.Store({
           }
         );
 
-        await dispatch("fetchUser");
+        await dispatch("fetchUserByCookie");
       } catch (error) {
         return Promise.reject(error.response);
-      }
-    },
-    async createPost({ commit }, newPost) {
-      try {
-        const response = await axios.post(`${API_BASE_URL}/post`, newPost);
-        const createdPost = response.data;
-        commit("ADD_POST", createdPost);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async deletePost({ commit }, postId) {
-      try {
-        await axios.delete(`${API_BASE_URL}/post/${postId}`);
-        commit("DELETE_POST", postId);
-      } catch (error) {
-        console.error(error);
       }
     },
   },

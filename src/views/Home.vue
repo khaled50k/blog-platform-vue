@@ -1,6 +1,6 @@
 <template>
     <div class="md:col-span-3 lg:col-span-2 ml-0 flex flex-col gap-5 lg:ml-4 w-full items-center" id="posts">
-        <Post v-for="post in sortedPosts" :post="post" :key="post._id" id="post"></Post>
+        <Post v-for="post in posts" :post="post" :key="post._id" id="post"></Post>
     </div>
 </template>
   
@@ -45,14 +45,9 @@ import { useVirtualList } from "@vueuse/core";
 
 // Create a virtual list instance
 const store = useStore();
-const sortedPosts = computed(() => {
-    const posts = store.getters.getPosts;
-    // Sort the posts by createdAt in descending order
-    posts.sort((a, b) => {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-
-    return posts;
+const posts = computed(() => {
+   return  store.getters.getPosts;
+  
 });
 
 

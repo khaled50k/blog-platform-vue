@@ -4,6 +4,7 @@ import Explore from "../views/Explore.vue";
 import PostExplore from "../views/PostExplore.vue";
 import CreatePost from "../views/CreatePost.vue";
 import Login from "../views/Login.vue";
+import Profile from "../views/Profile.vue";
 import store from "../store/index";
 
 const routes = [
@@ -32,6 +33,13 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/user/:userId",
+    name: "Profile",
+    component: Profile,
+    props: true,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/create-post",
     name: "CreatePost",
     component: CreatePost,
@@ -44,19 +52,24 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    return savedPosition || { x: 0, y: 0 };
+    return { top: 0 }
   },
 });
 
 router.beforeEach(async (to, from) => {
+ if (to.name=='Profile'){
+
+  await store.dispatch('fetchUser', to.params.userId)
+
+ }
   if (to.meta.requiresAuth) {
     if (!productsFetched) {
       try {
         
-        await store.commit('SET_LOADING');
-        await store.dispatch("fetchUser");
+        // await store.commit('SET_LOADING');
+        await store.dispatch("fetchUserByCookie");
         await store.dispatch("fetchPosts");
-        await store.commit('SET_LOADING');
+        // await store.commit('SET_LOADING');
         productsFetched = true; // Mark products as fetched
       } catch (error) {
         return { path: "/login" };
