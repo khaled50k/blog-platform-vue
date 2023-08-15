@@ -72,7 +72,7 @@ export const store = new Vuex.Store({
     },
     async fetchUserByCookie({ commit }) {
       try {
-        commit("SET_LOADING", true);
+        // commit("SET_LOADING", true);
         const response = await axios.get(`${API_BASE_URL}/users/data`, {
           withCredentials: true,
         });
@@ -81,7 +81,7 @@ export const store = new Vuex.Store({
       } catch (error) {
         return Promise.reject(error.response.data.message);
       } finally {
-        commit("SET_LOADING", false);
+        // commit("SET_LOADING", false);
       }
     },
     async fetchUser({ commit }, id) {
@@ -136,6 +136,44 @@ export const store = new Vuex.Store({
 
         // Dispatch the 'fetchPosts' action to update the list of posts
         await dispatch("fetchPosts");
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    async login({ commit, dispatch }, data) {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/users/login`,
+          JSON.stringify(data),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        // Dispatch the 'fetchPosts' action to update the list of posts
+        await dispatch("fetchUserByCookie");
+      } catch (error) {
+        return Promise.reject(error.response);
+      }
+    },
+    async register({ commit, dispatch }, data) {
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/users/register`,
+          JSON.stringify(data),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        // Dispatch the 'fetchPosts' action to update the list of posts
+
       } catch (error) {
         return Promise.reject(error.response);
       }

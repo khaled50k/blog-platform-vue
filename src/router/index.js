@@ -4,7 +4,9 @@ import Explore from "../views/Explore.vue";
 import PostExplore from "../views/PostExplore.vue";
 import CreatePost from "../views/CreatePost.vue";
 import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
 import Profile from "../views/Profile.vue";
+import UserPosts from "../views/UserPosts.vue";
 import store from "../store/index";
 
 const routes = [
@@ -18,6 +20,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
   {
     path: "/explore",
@@ -40,6 +47,13 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/user/:userId/posts",
+    name: "UserPosts",
+    component: UserPosts,
+    props: true,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/create-post",
     name: "CreatePost",
     component: CreatePost,
@@ -52,24 +66,31 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    return { top: 0 }
+    return { top: 0 };
   },
 });
 
 router.beforeEach(async (to, from) => {
- if (to.name=='Profile'){
-
-  await store.dispatch('fetchUser', to.params.userId)
-
- }
+  if (to.name == "Profile" || to.name == "UserPosts") {
+    const user = await store.getters.getUserById(to.params.userId);
+    if (!user) {
+      await store.commit('SET_LOADING',true)
+      await store.dispatch("fetchUser", to.params.userId);
+      await store.commit('SET_LOADING',false)
+    }
+  }
   if (to.meta.requiresAuth) {
     if (!productsFetched) {
       try {
-        
-        // await store.commit('SET_LOADING');
+        const loggedInUser= await store.getters.getUser;
+        if (!loggedInUser) {
+         
+        }
+        await store.commit('SET_LOADING',true);
         await store.dispatch("fetchUserByCookie");
         await store.dispatch("fetchPosts");
         // await store.commit('SET_LOADING');
+        await store.commit('SET_LOADING',false);
         productsFetched = true; // Mark products as fetched
       } catch (error) {
         return { path: "/login" };

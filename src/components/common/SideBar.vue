@@ -10,7 +10,7 @@
                     <p class="text-gray-400">@{{ user.username }}</p>
 
                 </div>
-                <span class="material-icons text-blue-500 cursor-pointer">verified</span>
+                <span v-if="user.isVerified" class="material-icons text-blue-500 cursor-pointer">verified</span>
 
             </div>
 

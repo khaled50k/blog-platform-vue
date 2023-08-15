@@ -1,6 +1,6 @@
 <template>
     <div
-        class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden">
+        class="bg-white p-3 sm:p-4 flex flex-col justify-between rounded-xl sm:min-w-[445px] sm:min-h-[627px] overflow-hidden sm:w-[450px] w-full ">
 
         <div class="flex  mb-4 py-1 items-center">
             <div class="flex-shrink-0 mr-3">
@@ -36,7 +36,7 @@
 
             </div>
             <div class="flex-shrink-0 self-center flex">
-                <Menu as="div" class="relative z-30 inline-block text-left">
+                <Menu as="div" class="relative  inline-block text-left">
                     <div>
                         <MenuButton class="-m-2 p-2 rounded-full flex items-center text-gray-400 hover:text-gray-600">
                             <span class="sr-only">Open options</span>

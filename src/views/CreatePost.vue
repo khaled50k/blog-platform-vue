@@ -1,6 +1,23 @@
 
 <template>
-    <div class="sm:w-[500px] h-screen">
+
+<div class=" w-full min-h-[100vh] flex items-center justify-center bg-white" v-if="isLoading">
+        <div class="custom-loader"></div>
+    </div>
+
+    <div class=" w-full min-h-screen " v-else>
+        <Header class="main-content w-[inherit] h-[inherit]"></Header>
+        <div
+            class="  hidden lg:block  outline-line   container max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto w-full ">
+            <SideBar></SideBar>
+        </div>
+        <div class="container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl flex justify-start items-start w-full  "
+            style="height: 100%; max-height:100% ;">
+            <div class="  ml-0 mt-[64px]   py-4 lg:ml-[250px] items-start justify-center flex w-full min-h-full "
+                style="width: 100%; max-width:100% ">
+
+
+                <div class="sm:w-[500px] h-screen">
         <div class="bg-white p-4 sm:p-6 flex flex-col  rounded-xl ">
 
             <div class="flex  mb-4 py-1 items-center  flex-col w-full gap-5">
@@ -51,10 +68,18 @@
             </div>
         </div>
     </div>
+            </div>
+            <FloatingNav class="w-full"></FloatingNav>
+        </div>
+    </div>
+
 </template>
     
 
 <script>
+import FloatingNav from "../components/common/FloatingNav.vue";
+import Header from "../components/common/Header.vue";
+import SideBar from "../components/common/SideBar.vue";
 import { ref } from 'vue'
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { CheckIcon } from '@heroicons/vue/outline'
@@ -63,7 +88,7 @@ import { useRouter } from 'vue-router'
 
 export default {
     components: {
-        Dialog,
+        Dialog,FloatingNav,Header,SideBar,
         DialogOverlay,
         DialogTitle,
         TransitionChild,

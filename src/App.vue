@@ -1,29 +1,8 @@
 <template>
-    <div class=" w-full min-h-[100vh] flex items-center justify-center bg-white" v-if="isLoading">
-        <div class="custom-loader"></div>
-    </div>
-
-    <div class=" w-full min-h-screen " v-else>
-        <Header class="main-content w-[inherit] h-[inherit]"></Header>
-        <div
-            class="  hidden lg:block  outline-line   container max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl mx-auto w-full ">
-            <SideBar></SideBar>
-        </div>
-        <div class="container mx-auto max-w-xl md:max-w-4xl lg:max-w-6xl xl:max-w-6xl flex justify-start items-start w-full  "
-            style="height: 100%; max-height:100% ;">
-            <div class="  ml-0 mt-[64px]   py-4 lg:ml-[250px] items-start justify-center flex w-full min-h-full "
-                style="width: 100%; max-width:100% ">
-
-                <router-view class="w-full h-full"></router-view>
-
-            </div>
-            <FloatingNav class="w-full"></FloatingNav>
-        </div>
-    </div>
+<router-view></router-view>
 </template>
    
 <script>
-import Header from './components/common/Header.vue';
 import {
     BellIcon,
     CalendarIcon,
@@ -46,15 +25,12 @@ import {
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { CodeIcon, DotsVerticalIcon, FlagIcon, StarIcon, HeartIcon as solidHeart, BookmarkIcon as solidBookMark } from '@heroicons/vue/solid'
 
-import SideBar from './components/common/SideBar.vue';
-import FloatingNav from './components/common/FloatingNav.vue';
 import Post from './components/common/Post.vue';
 import { onMounted, ref, watch, computed, defineAsyncComponent } from 'vue';
 import { useStore } from 'vuex'
-import RightSideBar from './components/common/RightSideBar.vue';
 export default {
     components: {
-        Header, BellIcon, SearchIcon, FloatingNav, RightSideBar,
+         BellIcon, SearchIcon,
         CalendarIcon,
         ChartBarIcon, Menu,
         MenuButton, BookmarkIcon, solidBookMark,
@@ -75,8 +51,7 @@ export default {
         UsersIcon,
         XIcon,
         ShoppingCartIcon,
-        Post,
-        SideBar
+     
     },
     setup(props) {
         const store = useStore();
